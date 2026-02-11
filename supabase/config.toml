@@ -1,0 +1,9 @@
+# Supabase Edge Function Configuration
+# This file is used by the Supabase CLI for local development and deployment
+
+project_id = "your-project-id"
+
+[functions.refresh-ranks]
+enabled = true
+verify_jwt = false
+import_map = "./functions/import_map.json"

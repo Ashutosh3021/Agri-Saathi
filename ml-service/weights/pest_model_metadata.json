@@ -1,0 +1,8 @@
+{
+  "model_type": "MobileNetV2",
+  "input_size": 224,
+  "num_classes": 38,
+  "val_accuracy": 0.9650658965110779,
+  "val_top3_accuracy": 0.9964051842689514,
+  "training_date": "2026-02-11T12:44:01.883582"
+}

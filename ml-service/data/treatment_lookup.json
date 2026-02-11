@@ -1,0 +1,382 @@
+{
+  "Apple___Apple_scab": {
+    "id": "APPLE_SCAB_01",
+    "display_name": "Apple Scab Disease",
+    "quick_fix": "Remove and destroy infected leaves and fallen debris. Apply fungicide spray immediately.",
+    "permanent_fix": "Plant resistant apple varieties like Liberty or Freedom. Ensure proper spacing for air circulation. Apply preventive fungicide in early spring before bud break.",
+    "organic_fix": "Spray neem oil (3%) mixed with water weekly. Apply compost tea to boost plant immunity. Use copper-based fungicide approved for organic use.",
+    "severity": "medium",
+    "pesticide_name": "Mancozeb 75% WP or Captan 50% WP",
+    "affected_crop": "Apple"
+  },
+  "Apple___Black_rot": {
+    "id": "APPLE_BLACKROT_02",
+    "display_name": "Apple Black Rot Disease",
+    "quick_fix": "Prune and destroy all infected branches and fruit mummies. Disinfect pruning tools with bleach solution.",
+    "permanent_fix": "Remove all mummified fruits from trees and ground. Improve drainage to reduce humidity. Apply fungicide during bloom and fruit development.",
+    "organic_fix": "Apply lime sulfur spray during dormancy. Use Bacillus subtilis-based biological fungicide. Maintain tree vigor with organic compost.",
+    "severity": "high",
+    "pesticide_name": "Thiophanate-methyl 70% WP or Tebuconazole 25% EC",
+    "affected_crop": "Apple"
+  },
+  "Apple___Cedar_apple_rust": {
+    "id": "APPLE_CEDARRUST_03",
+    "display_name": "Cedar Apple Rust Disease",
+    "quick_fix": "Remove galls from nearby cedar/juniper trees. Apply protective fungicide to apple trees.",
+    "permanent_fix": "Remove cedar trees within 1-2 miles if possible. Plant resistant varieties like Redfree or William's Pride. Apply fungicide starting at pink bud stage.",
+    "organic_fix": "Apply sulfur-based fungicide weekly during wet periods. Remove alternate host plants (cedars). Use resistant rootstock.",
+    "severity": "medium",
+    "pesticide_name": "Myclobutanil 10% WP or Fenbuconazole 10% EC",
+    "affected_crop": "Apple"
+  },
+  "Apple___healthy": {
+    "id": "APPLE_HEALTHY_04",
+    "display_name": "Healthy Apple Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Continue regular care including proper watering, fertilization, and pruning.",
+    "organic_fix": "Maintain soil health with compost and organic mulch.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Apple"
+  },
+  "Blueberry___healthy": {
+    "id": "BLUEBERRY_HEALTHY_05",
+    "display_name": "Healthy Blueberry Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain acidic soil pH (4.5-5.5). Apply acidic fertilizer annually.",
+    "organic_fix": "Mulch with pine needles or sawdust to maintain acidity.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Blueberry"
+  },
+  "Cherry_(including_sour)___Powdery_mildew": {
+    "id": "CHERRY_POWDERY_06",
+    "display_name": "Cherry Powdery Mildew",
+    "quick_fix": "Prune infected shoots and leaves. Improve air circulation by thinning branches. Apply fungicide spray.",
+    "permanent_fix": "Plant resistant varieties. Avoid overhead irrigation. Apply sulfur or synthetic fungicides starting at bud break.",
+    "organic_fix": "Spray potassium bicarbonate or neem oil. Apply milk solution (1:10 milk to water) weekly. Increase plant spacing.",
+    "severity": "medium",
+    "pesticide_name": "Sulfur 80% WP or Myclobutanil 20% EW",
+    "affected_crop": "Cherry"
+  },
+  "Cherry_(including_sour)___healthy": {
+    "id": "CHERRY_HEALTHY_07",
+    "display_name": "Healthy Cherry Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain regular pruning, fertilization, and pest monitoring.",
+    "organic_fix": "Apply compost mulch and beneficial insect habitat plants nearby.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Cherry"
+  },
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "id": "CORN_GRAYSPOT_08",
+    "display_name": "Corn Gray Leaf Spot",
+    "quick_fix": "Remove crop residue after harvest. Apply fungicide if disease is severe and weather is wet.",
+    "permanent_fix": "Rotate with non-grass crops (soybeans, legumes). Plant resistant hybrids. Ensure proper plant spacing for airflow.",
+    "organic_fix": "Rotate crops with legumes. Apply compost to improve soil health. Use resistant open-pollinated varieties.",
+    "severity": "high",
+    "pesticide_name": "Azoxystrobin 23% SC or Pyraclostrobin 20% WG",
+    "affected_crop": "Corn"
+  },
+  "Corn_(maize)___Common_rust_": {
+    "id": "CORN_RUST_09",
+    "display_name": "Corn Common Rust",
+    "quick_fix": "Monitor for pustule development. Apply fungicide if rust is severe before tasseling.",
+    "permanent_fix": "Plant resistant hybrids. Rotate crops. Apply fungicide preventive spray in high-risk areas.",
+    "organic_fix": "Plant early maturing varieties to avoid peak rust season. Improve soil fertility with compost. Select resistant varieties.",
+    "severity": "medium",
+    "pesticide_name": "Mancozeb 75% WP or Propiconazole 25% EC",
+    "affected_crop": "Corn"
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "id": "CORN_NORTHERNBLIGHT_10",
+    "display_name": "Corn Northern Leaf Blight",
+    "quick_fix": "Destroy infected crop residue. Apply fungicide if lesions appear on upper leaves before tasseling.",
+    "permanent_fix": "Rotate with non-host crops. Plant resistant hybrids. Avoid continuous corn planting.",
+    "organic_fix": "Rotate with legumes or small grains. Remove and compost infected debris. Choose resistant varieties.",
+    "severity": "high",
+    "pesticide_name": "Chlorothalonil 75% WP or Azoxystrobin 23% SC",
+    "affected_crop": "Corn"
+  },
+  "Corn_(maize)___healthy": {
+    "id": "CORN_HEALTHY_11",
+    "display_name": "Healthy Corn Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain balanced fertilization, especially nitrogen. Monitor for pest pressure.",
+    "organic_fix": "Apply compost and practice crop rotation with legumes.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Corn"
+  },
+  "Grape___Black_rot": {
+    "id": "GRAPE_BLACKROT_12",
+    "display_name": "Grape Black Rot Disease",
+    "quick_fix": "Remove and destroy all mummified berries and infected canes. Apply fungicide immediately.",
+    "permanent_fix": "Practice strict sanitation - remove all infected material. Apply protective fungicide from bud break to harvest. Ensure good air circulation.",
+    "organic_fix": "Apply copper sulfate or lime sulfur during dormancy. Use Bacillus subtilis sprays. Remove infected berries promptly.",
+    "severity": "high",
+    "pesticide_name": "Mancozeb 75% WP or Myclobutanil 10% WP",
+    "affected_crop": "Grape"
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "id": "GRAPE_ESCA_13",
+    "display_name": "Grape Esca (Black Measles)",
+    "quick_fix": "Prune out dead or dying wood. Avoid trunk injuries. Do not use pruning wound dressings.",
+    "permanent_fix": "Remove severely infected vines. Avoid stress - maintain proper irrigation and nutrition. Delay pruning until late winter.",
+    "organic_fix": "Maintain vine vigor with organic matter. Avoid heavy pruning cuts. Protect trunks from mechanical damage.",
+    "severity": "high",
+    "pesticide_name": "No effective chemical treatment available",
+    "affected_crop": "Grape"
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "id": "GRAPE_LEAFBLIGHT_14",
+    "display_name": "Grape Leaf Blight",
+    "quick_fix": "Remove infected leaves. Improve air circulation. Apply copper-based fungicide.",
+    "permanent_fix": "Practice good canopy management. Apply preventive fungicides during wet periods. Ensure proper vineyard drainage.",
+    "organic_fix": "Apply copper oxychloride. Improve pruning for better airflow. Use compost tea sprays.",
+    "severity": "medium",
+    "pesticide_name": "Copper oxychloride 50% WP or Mancozeb 75% WP",
+    "affected_crop": "Grape"
+  },
+  "Grape___healthy": {
+    "id": "GRAPE_HEALTHY_15",
+    "display_name": "Healthy Grape Vine",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain proper pruning, training, and canopy management.",
+    "organic_fix": "Apply compost mulch and cover crops between rows.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Grape"
+  },
+  "Orange___Haunglongbing_(Citrus_greening)": {
+    "id": "ORANGE_GREENING_16",
+    "display_name": "Citrus Greening (Huanglongbing)",
+    "quick_fix": "Remove and destroy infected trees immediately - there is no cure. Control psyllid insects with insecticide.",
+    "permanent_fix": "Plant certified disease-free nursery stock. Use resistant rootstock. Control Asian citrus psyllid vector rigorously.",
+    "organic_fix": "No organic cure available. Remove infected trees. Use reflective mulch to repel psyllids. Plant disease-free certified trees only.",
+    "severity": "high",
+    "pesticide_name": "Imidacloprid 17.8% SL or Dimethoate 30% EC (for psyllid control)",
+    "affected_crop": "Orange"
+  },
+  "Peach___Bacterial_spot": {
+    "id": "PEACH_BACTERIAL_17",
+    "display_name": "Peach Bacterial Spot",
+    "quick_fix": "Prune infected twigs. Apply copper-based bactericide. Avoid overhead irrigation.",
+    "permanent_fix": "Plant resistant varieties. Apply copper sprays during dormancy and early season. Improve air circulation.",
+    "organic_fix": "Apply copper sulfate during dormancy. Use neem oil sprays. Plant resistant varieties like Contender or Redhaven.",
+    "severity": "medium",
+    "pesticide_name": "Copper hydroxide 50% WP or Oxytetracycline 17.5% SP",
+    "affected_crop": "Peach"
+  },
+  "Peach___healthy": {
+    "id": "PEACH_HEALTHY_18",
+    "display_name": "Healthy Peach Tree",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain annual pruning, thinning, and balanced fertilization.",
+    "organic_fix": "Apply compost mulch and practice integrated pest management.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Peach"
+  },
+  "Pepper,_bell___Bacterial_spot": {
+    "id": "PEPPER_BACTERIAL_19",
+    "display_name": "Pepper Bacterial Spot",
+    "quick_fix": "Remove infected leaves and fruits. Apply copper-based bactericide. Avoid working with wet plants.",
+    "permanent_fix": "Use certified disease-free seeds. Rotate crops 2-3 years. Apply copper sprays preventively during wet weather.",
+    "organic_fix": "Apply copper oxychloride. Use raised beds for better drainage. Plant resistant varieties like Bell Boy or California Wonder.",
+    "severity": "high",
+    "pesticide_name": "Copper hydroxide 50% WP or Streptomycin sulfate 90% SP",
+    "affected_crop": "Pepper"
+  },
+  "Pepper,_bell___healthy": {
+    "id": "PEPPER_HEALTHY_20",
+    "display_name": "Healthy Bell Pepper",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Maintain consistent watering and balanced fertilization with calcium.",
+    "organic_fix": "Apply compost and mulch to maintain even soil moisture.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Pepper"
+  },
+  "Potato___Early_blight": {
+    "id": "POTATO_EARLYBLIGHT_21",
+    "display_name": "Potato Early Blight",
+    "quick_fix": "Remove lower infected leaves. Apply fungicide spray. Ensure adequate potassium fertilization.",
+    "permanent_fix": "Rotate with non-solanaceous crops for 3 years. Use certified seed potatoes. Apply preventive fungicides.",
+    "organic_fix": "Apply copper-based fungicide. Use compost tea sprays. Plant resistant varieties like Kennebec or Defender.",
+    "severity": "medium",
+    "pesticide_name": "Chlorothalonil 75% WP or Mancozeb 75% WP",
+    "affected_crop": "Potato"
+  },
+  "Potato___Late_blight": {
+    "id": "POTATO_LATEBLIGHT_22",
+    "display_name": "Potato Late Blight",
+    "quick_fix": "Destroy all infected plants immediately. Apply systemic fungicide urgently. Stop irrigation to reduce humidity.",
+    "permanent_fix": "Plant resistant varieties. Ensure excellent drainage. Apply protective fungicides before disease appears. Practice crop rotation.",
+    "organic_fix": "Apply copper-based fungicide preventively. Use resistant varieties like Defender or Sarpo Mira. Improve air circulation.",
+    "severity": "high",
+    "pesticide_name": "Metalaxyl 8% + Mancozeb 64% WP or Cymoxanil 8% + Mancozeb 64% WP",
+    "affected_crop": "Potato"
+  },
+  "Potato___healthy": {
+    "id": "POTATO_HEALTHY_23",
+    "display_name": "Healthy Potato Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Hill soil around stems. Maintain consistent soil moisture. Monitor for pest pressure.",
+    "organic_fix": "Use certified organic seed potatoes. Apply compost mulch.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Potato"
+  },
+  "Raspberry___healthy": {
+    "id": "RASPBERRY_HEALTHY_24",
+    "display_name": "Healthy Raspberry",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Prune old canes after fruiting. Maintain trellis system. Apply balanced fertilizer.",
+    "organic_fix": "Apply compost mulch. Plant companion plants like chives or garlic.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Raspberry"
+  },
+  "Soybean___healthy": {
+    "id": "SOYBEAN_HEALTHY_25",
+    "display_name": "Healthy Soybean",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Inoculate seeds with rhizobium bacteria. Maintain proper plant population.",
+    "organic_fix": "Use certified organic seeds. Rotate with corn or small grains.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Soybean"
+  },
+  "Squash___Powdery_mildew": {
+    "id": "SQUASH_POWDERY_26",
+    "display_name": "Squash Powdery Mildew",
+    "quick_fix": "Remove severely infected leaves. Apply fungicide or neem oil spray. Increase air circulation.",
+    "permanent_fix": "Plant resistant varieties. Avoid overhead watering. Apply preventive fungicides when conditions favor disease.",
+    "organic_fix": "Spray milk solution (1:9 milk to water). Apply potassium bicarbonate. Use neem oil weekly.",
+    "severity": "medium",
+    "pesticide_name": "Sulfur 80% WP or Myclobutanil 20% EW",
+    "affected_crop": "Squash"
+  },
+  "Strawberry___Leaf_scorch": {
+    "id": "STRAWBERRY_SCORCH_27",
+    "display_name": "Strawberry Leaf Scorch",
+    "quick_fix": "Remove infected leaves. Apply fungicide. Avoid overhead irrigation.",
+    "permanent_fix": "Plant certified disease-free plants. Space plants for air circulation. Mulch with straw to prevent splash.",
+    "organic_fix": "Apply copper-based fungicide. Use straw mulch. Remove infected leaves promptly.",
+    "severity": "medium",
+    "pesticide_name": "Captan 50% WP or Thiophanate-methyl 70% WP",
+    "affected_crop": "Strawberry"
+  },
+  "Strawberry___healthy": {
+    "id": "STRAWBERRY_HEALTHY_28",
+    "display_name": "Healthy Strawberry",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Renovate bed after harvest. Remove old leaves. Apply balanced fertilizer.",
+    "organic_fix": "Mulch with straw. Apply compost between rows.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Strawberry"
+  },
+  "Tomato___Bacterial_spot": {
+    "id": "TOMATO_BACTERIAL_29",
+    "display_name": "Tomato Bacterial Spot",
+    "quick_fix": "Remove infected leaves and fruits. Apply copper spray. Avoid working with wet plants. Disinfect tools.",
+    "permanent_fix": "Use certified disease-free seeds. Rotate crops 3 years. Apply copper preventively. Use drip irrigation.",
+    "organic_fix": "Apply copper oxychloride. Use resistant varieties like Mountain Magic or Defiant. Space plants widely.",
+    "severity": "high",
+    "pesticide_name": "Copper hydroxide 50% WP or Streptomycin sulfate 90% SP",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Early_blight": {
+    "id": "TOMATO_EARLYBLIGHT_30",
+    "display_name": "Tomato Early Blight",
+    "quick_fix": "Remove lower infected leaves. Apply fungicide. Mulch to prevent soil splash. Stake plants.",
+    "permanent_fix": "Rotate crops 3 years. Use resistant varieties. Apply preventive fungicides. Ensure good air circulation.",
+    "organic_fix": "Apply copper spray. Use compost tea. Plant resistant varieties like Iron Lady or Defiant. Mulch heavily.",
+    "severity": "medium",
+    "pesticide_name": "Chlorothalonil 75% WP or Mancozeb 75% WP",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Late_blight": {
+    "id": "TOMATO_LATEBLIGHT_31",
+    "display_name": "Tomato Late Blight",
+    "quick_fix": "Remove and destroy ALL infected plants immediately. Apply systemic fungicide urgently. Stop overhead watering.",
+    "permanent_fix": "Plant resistant varieties like Mountain Magic or Defiant. Ensure excellent drainage. Apply preventive fungicides before wet weather.",
+    "organic_fix": "Apply copper spray weekly. Use resistant varieties. Remove volunteer tomato plants. Ensure 3-year crop rotation.",
+    "severity": "high",
+    "pesticide_name": "Metalaxyl 8% + Mancozeb 64% WP or Dimethomorph 50% WP",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Leaf_Mold": {
+    "id": "TOMATO_LEAFMOLD_32",
+    "display_name": "Tomato Leaf Mold",
+    "quick_fix": "Increase ventilation in greenhouse. Remove infected leaves. Apply fungicide. Lower humidity.",
+    "permanent_fix": "Use resistant varieties. Ensure excellent air circulation. Avoid overhead watering. Space plants properly.",
+    "organic_fix": "Improve ventilation. Apply copper spray. Use resistant varieties like Iron Lady. Mulch to reduce humidity.",
+    "severity": "medium",
+    "pesticide_name": "Chlorothalonil 75% WP or Mancozeb 75% WP",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "id": "TOMATO_SEPTORIA_33",
+    "display_name": "Tomato Septoria Leaf Spot",
+    "quick_fix": "Remove lower infected leaves. Apply fungicide. Mulch to prevent splash. Remove plant debris.",
+    "permanent_fix": "Rotate crops 2-3 years. Use resistant varieties. Apply preventive fungicides. Ensure good drainage.",
+    "organic_fix": "Apply copper spray. Remove infected leaves weekly. Use compost mulch. Plant resistant varieties.",
+    "severity": "medium",
+    "pesticide_name": "Chlorothalonil 75% WP or Mancozeb 75% WP",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "id": "TOMATO_SPIDERMITE_34",
+    "display_name": "Tomato Spider Mites",
+    "quick_fix": "Spray plants with strong water jet to dislodge mites. Apply miticide or insecticidal soap. Increase humidity.",
+    "permanent_fix": "Maintain proper irrigation - drought stress increases mite problems. Apply preventive miticides. Remove weeds that host mites.",
+    "organic_fix": "Apply neem oil or insecticidal soap. Release predatory mites. Spray with water twice daily for 3 days.",
+    "severity": "medium",
+    "pesticide_name": "Abamectin 1.8% EC or Spiromesifen 22.9% SC",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Target_Spot": {
+    "id": "TOMATO_TARGETSPOT_35",
+    "display_name": "Tomato Target Spot",
+    "quick_fix": "Remove infected leaves. Apply fungicide. Improve air circulation. Avoid overhead watering.",
+    "permanent_fix": "Rotate crops 2-3 years. Use resistant varieties. Apply preventive fungicides. Remove crop residue.",
+    "organic_fix": "Apply copper spray. Remove infected debris. Use compost mulch. Space plants for airflow.",
+    "severity": "medium",
+    "pesticide_name": "Chlorothalonil 75% WP or Azoxystrobin 23% SC",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "id": "TOMATO_TYLCV_36",
+    "display_name": "Tomato Yellow Leaf Curl Virus",
+    "quick_fix": "Remove and destroy infected plants immediately. Control whiteflies with insecticide. Use reflective mulch.",
+    "permanent_fix": "Plant resistant varieties like TYLCV-resistant hybrids. Use reflective mulch to repel whiteflies. Screen greenhouse vents.",
+    "organic_fix": "Remove infected plants immediately. Use reflective silver mulch. Release Encarsia wasps for whitefly control. Plant resistant varieties.",
+    "severity": "high",
+    "pesticide_name": "Imidacloprid 17.8% SL or Acetamiprid 20% SP (for whitefly control)",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "id": "TOMATO_MOSAIC_37",
+    "display_name": "Tomato Mosaic Virus",
+    "quick_fix": "Remove and destroy infected plants. Disinfect hands and tools with soap/bleach. Control aphids.",
+    "permanent_fix": "Use resistant varieties like Celebrity or Big Beef. Plant certified disease-free seeds. Practice strict sanitation. Remove weeds.",
+    "organic_fix": "Plant resistant varieties. Remove infected plants. Control aphids with neem oil. Wash hands before handling plants.",
+    "severity": "high",
+    "pesticide_name": "No chemical cure available - use resistant varieties",
+    "affected_crop": "Tomato"
+  },
+  "Tomato___healthy": {
+    "id": "TOMATO_HEALTHY_38",
+    "display_name": "Healthy Tomato Plant",
+    "quick_fix": "Your plant looks healthy! No action needed.",
+    "permanent_fix": "Continue staking, pruning suckers, and consistent watering. Apply balanced fertilizer.",
+    "organic_fix": "Mulch with straw or compost. Use organic fertilizer. Practice companion planting with basil or marigolds.",
+    "severity": "none",
+    "pesticide_name": null,
+    "affected_crop": "Tomato"
+  }
+}

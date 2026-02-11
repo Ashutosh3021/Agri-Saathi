@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farmer {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  phone         String         @unique @map("phone")
+  name          String?        @map("name")
+  location      String?        @map("location")
+  district      String?        @map("district")
+  state         String?        @map("state")
+  lat           Decimal?       @db.Decimal(9, 6) @map("lat")
+  lng           Decimal?       @db.Decimal(9, 6) @map("lng")
+  language      String         @default("hi") @map("language")
+  createdAt     DateTime       @default(now()) @map("createdAt")
+  updatedAt     DateTime       @updatedAt @map("updatedAt")
+  
+  scans         Scan[]
+  soilReadings  SoilReading[]
+
+  @@map("Farmer")
+}
+
+model Volunteer {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  userId           String            @unique @db.Uuid @map("userId")
+  name             String            @map("name")
+  phone            String            @unique @map("phone")
+  district         String?           @map("district")
+  state            String?           @map("state")
+  lat              Decimal?          @db.Decimal(9, 6) @map("lat")
+  lng              Decimal?          @db.Decimal(9, 6) @map("lng")
+  totalCoins       Int               @default(0) @map("totalCoins")
+  totalScans       Int               @default(0) @map("totalScans")
+  avgRating        Decimal           @default(0) @db.Decimal(3, 2) @map("avgRating")
+  isActive         Boolean           @default(true) @map("isActive")
+  createdAt        DateTime          @default(now()) @map("createdAt")
+  
+  scans            Scan[]
+  soilReadings     SoilReading[]
+  coinTransactions CoinTransaction[]
+  redemptions      Redemption[]
+  leaderboardCache LeaderboardCache?
+
+  @@map("Volunteer")
+}
+
+model Scan {
+  id               String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  farmerId         String       @db.Uuid @map("farmerId")
+  volunteerId      String?      @db.Uuid @map("volunteerId")
+  scanType         String       @map("scanType")
+  imageUrl         String?      @map("imageUrl")
+  diseaseDetected  String?      @map("diseaseDetected")
+  confidence       Decimal?     @db.Decimal(5, 4) @map("confidence")
+  cropType         String?      @map("cropType")
+  quickFix         String?      @map("quickFix")
+  permanentFix     String?      @map("permanentFix")
+  severity         String?      @map("severity")
+  rawModelOutput   Json?        @map("rawModelOutput")
+  farmerRating     Int?         @map("farmerRating")
+  coinsAwarded     Int          @default(0) @map("coinsAwarded")
+  createdAt        DateTime     @default(now()) @map("createdAt")
+  
+  farmer           Farmer       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  volunteer        Volunteer?   @relation(fields: [volunteerId], references: [id], onDelete: SetNull)
+  
+  @@index([farmerId], map: "Scan_farmerId_idx")
+  @@index([volunteerId], map: "Scan_volunteerId_idx")
+  @@index([createdAt], map: "Scan_createdAt_idx")
+  @@index([scanType], map: "Scan_scanType_idx")
+  @@map("Scan")
+}
+
+model SoilReading {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  farmerId       String       @db.Uuid @map("farmerId")
+  volunteerId    String?      @db.Uuid @map("volunteerId")
+  deviceId       String       @map("deviceId")
+  nitrogen       Decimal?     @db.Decimal(6, 2) @map("nitrogen")
+  phosphorus     Decimal?     @db.Decimal(6, 2) @map("phosphorus")
+  potassium      Decimal?     @db.Decimal(6, 2) @map("potassium")
+  moisture       Decimal?     @db.Decimal(5, 2) @map("moisture")
+  temperature    Decimal?     @db.Decimal(5, 2) @map("temperature")
+  humidity       Decimal?     @db.Decimal(5, 2) @map("humidity")
+  ph             Decimal?     @db.Decimal(4, 2) @map("ph")
+  rainfall       Decimal?     @db.Decimal(6, 2) @map("rainfall")
+  selectedCrop   String?      @map("selectedCrop")
+  recommendation Json?        @map("recommendation")
+  coinsAwarded   Int          @default(0) @map("coinsAwarded")
+  createdAt      DateTime     @default(now()) @map("createdAt")
+  
+  farmer         Farmer       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  volunteer      Volunteer?   @relation(fields: [volunteerId], references: [id], onDelete: SetNull)
+  
+  @@index([farmerId], map: "SoilReading_farmerId_idx")
+  @@map("SoilReading")
+}
+
+model CoinTransaction {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  volunteerId     String       @db.Uuid @map("volunteerId")
+  amount          Int          @map("amount")
+  transactionType String       @map("transactionType")
+  referenceId     String?      @db.Uuid @map("referenceId")
+  description     String?      @map("description")
+  balanceAfter    Int          @map("balanceAfter")
+  createdAt       DateTime     @default(now()) @map("createdAt")
+  
+  volunteer       Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  
+  @@index([volunteerId], map: "CoinTransaction_volunteerId_idx")
+  @@index([createdAt], map: "CoinTransaction_createdAt_idx")
+  @@map("CoinTransaction")
+}
+
+model Redemption {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  volunteerId     String       @db.Uuid @map("volunteerId")
+  coinsRedeemed   Int          @map("coinsRedeemed")
+  method          String       @map("method")
+  methodDetails   String?      @map("methodDetails")
+  amountInr       Decimal?     @db.Decimal(8, 2) @map("amountInr")
+  status          String       @default("pending") @map("status")
+  adminNote       String?      @map("adminNote")
+  createdAt       DateTime     @default(now()) @map("createdAt")
+  processedAt     DateTime?    @map("processedAt")
+  
+  volunteer       Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+
+  @@map("Redemption")
+}
+
+model LeaderboardCache {
+  volunteerId   String       @id @unique @db.Uuid @map("volunteerId")
+  name          String       @map("name")
+  district      String       @default("") @map("district")
+  state         String       @default("") @map("state")
+  totalCoins    Int          @default(0) @map("totalCoins")
+  totalScans    Int          @default(0) @map("totalScans")
+  avgRating     Decimal      @default(0) @db.Decimal(3, 2) @map("avgRating")
+  nationalRank  Int?         @map("nationalRank")
+  stateRank     Int?         @map("stateRank")
+  districtRank  Int?         @map("districtRank")
+  lastUpdated   DateTime     @default(now()) @map("lastUpdated")
+  
+  volunteer     Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  
+  @@index([totalCoins], map: "LeaderboardCache_totalCoins_idx")
+  @@index([state, totalCoins], map: "LeaderboardCache_state_totalCoins_idx")
+  @@index([district, totalCoins], map: "LeaderboardCache_district_totalCoins_idx")
+  @@map("LeaderboardCache")
+}
+
+model DiseaseTreatment {
+  id              String       @id @map("id")
+  diseaseName     String       @map("diseaseName")
+  cropType        String       @map("cropType")
+  quickFix        String       @db.Text @map("quickFix")
+  permanentFix    String       @db.Text @map("permanentFix")
+  severityGuide   String?      @map("severityGuide")
+  pesticideName   String?      @map("pesticideName")
+  organicFix      String?      @db.Text @map("organicFix")
+  createdAt       DateTime     @default(now()) @map("createdAt")
+
+  @@map("DiseaseTreatment")
+}
+
+model DroneDevice {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  deviceId      String       @unique @map("deviceId")
+  deviceToken   String       @unique @map("deviceToken")
+  name          String?      @map("name")
+  isActive      Boolean      @default(true) @map("isActive")
+  lastUsedAt    DateTime?    @map("lastUsedAt")
+  createdAt     DateTime     @default(now()) @map("createdAt")
+  volunteerId   String?      @db.Uuid @map("volunteerId")
+
+  @@map("DroneDevice")
+}
+
+model SoilDevice {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  deviceId      String       @unique @map("deviceId")
+  deviceToken   String       @unique @map("deviceToken")
+  name          String?      @map("name")
+  isActive      Boolean      @default(true) @map("isActive")
+  lastUsedAt    DateTime?    @map("lastUsedAt")
+  createdAt     DateTime     @default(now()) @map("createdAt")
+  volunteerId   String?      @db.Uuid @map("volunteerId")
+
+  @@map("SoilDevice")
+}
