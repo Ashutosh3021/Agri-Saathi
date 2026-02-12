@@ -52,12 +52,12 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
-          <a
-            href="#footer"
-            className="rounded-lg border-2 border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          <button
+            onClick={() => document.getElementById('volunteer-signup')?.scrollIntoView({ behavior: 'smooth' })}
+            className="border-2 border-green-600 text-green-600 hover:bg-green-50 rounded-xl px-5 py-2 font-semibold text-sm transition-colors"
           >
             Join as Volunteer
-          </a>
+          </button>
         </div>
 
         {/* Mobile toggle */}
@@ -91,13 +91,15 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <a
-                href="#footer"
-                onClick={() => setMobileOpen(false)}
-                className="mt-2 rounded-lg border-2 border-primary px-5 py-2 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+              <button
+                onClick={() => {
+                  document.getElementById('volunteer-signup')?.scrollIntoView({ behavior: 'smooth' })
+                  setMobileOpen(false)
+                }}
+                className="mt-2 w-full rounded-lg border-2 border-green-600 bg-green-600 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-green-700"
               >
                 Join as Volunteer
-              </a>
+              </button>
             </div>
           </motion.div>
         )}

@@ -6,6 +6,7 @@ import {
   Home,
   Camera,
   Trophy,
+  Star,
   Wallet,
   Settings,
   LogOut,
@@ -20,6 +21,7 @@ const navItems = [
   { label: "Overview", href: "/dashboard", icon: Home },
   { label: "My Scans", href: "/dashboard/scans", icon: Camera },
   { label: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
+  { label: "My Ratings", href: "/dashboard/ratings", icon: Star },
   { label: "Redeem Coins", href: "/dashboard/redeem", icon: Wallet },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ]

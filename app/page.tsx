@@ -3,6 +3,7 @@ import { Hero } from "@/components/landing/hero"
 import { Problem } from "@/components/landing/problem"
 import { Solution } from "@/components/landing/solution"
 import { HowItWorks } from "@/components/landing/how-it-works"
+import VolunteerCTASection from "@/components/landing/VolunteerCTASection"
 import { StatsBar } from "@/components/landing/stats-bar"
 import { Revenue } from "@/components/landing/revenue"
 import { Demo } from "@/components/landing/demo"
@@ -16,6 +17,7 @@ export default function Page() {
       <Problem />
       <Solution />
       <HowItWorks />
+      <VolunteerCTASection />
       <StatsBar />
       <Revenue />
       <Demo />
