@@ -16,6 +16,7 @@ const states = [
 interface FormData {
   name: string
   phone: string
+  email: string
   district: string
   state: string
   motivation: string
@@ -24,6 +25,7 @@ interface FormData {
 interface FormErrors {
   name?: string
   phone?: string
+  email?: string
   district?: string
   state?: string
 }
@@ -32,6 +34,7 @@ export default function VolunteerCTASection() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
+    email: "",
     district: "",
     state: "",
     motivation: ""
@@ -54,6 +57,13 @@ export default function VolunteerCTASection() {
       isValid = false
     } else if (!/^\d{10}$/.test(formData.phone)) {
       newErrors.phone = "Phone must be exactly 10 digits"
+      isValid = false
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required"
+      isValid = false
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
       isValid = false
     }
     if (!formData.district.trim()) {
@@ -92,7 +102,7 @@ export default function VolunteerCTASection() {
 
       setSubmitted(true)
     } catch (err) {
-      setError("Something went wrong. Please try again.")
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -250,12 +260,13 @@ export default function VolunteerCTASection() {
                   <Check className="w-10 h-10 text-green-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Received! 🎉</h3>
-                <p className="text-gray-600 mb-6">We'll verify your details and call you within 24 hours.</p>
+                <p className="text-gray-600 mb-2">Check your email ({formData.email}) for a verification link.</p>
+                <p className="text-sm text-gray-500 mb-6">Click it to access your volunteer dashboard. Link expires in 24 hours.</p>
                 <button
-                  onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => window.location.href = '/Volunteers'}
                   className="bg-[#16a34a] hover:bg-[#15803d] text-white rounded-xl px-6 py-3 font-semibold transition-colors"
                 >
-                  See How It Works
+                  Go to Login Page →
                 </button>
               </motion.div>
             ) : (
@@ -285,10 +296,22 @@ export default function VolunteerCTASection() {
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
-                      placeholder="+91"
+                      placeholder="10 digit number"
                     />
                     {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
                   </div>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                    placeholder="your@email.com"
+                  />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6 mb-6">

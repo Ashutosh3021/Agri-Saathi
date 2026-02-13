@@ -18,8 +18,8 @@ model Farmer {
   lat           Decimal?       @db.Decimal(9, 6) @map("lat")
   lng           Decimal?       @db.Decimal(9, 6) @map("lng")
   language      String         @default("hi") @map("language")
-  createdAt     DateTime       @default(now()) @map("createdAt")
-  updatedAt     DateTime       @updatedAt @map("updatedAt")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
   
   scans         Scan[]
   soilReadings  SoilReading[]
@@ -28,61 +28,75 @@ model Farmer {
 }
 
 model Volunteer {
-  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  userId           String            @unique @db.Uuid @map("userId")
-  name             String            @map("name")
-  phone            String            @unique @map("phone")
-  district         String?           @map("district")
-  state            String?           @map("state")
-  lat              Decimal?          @db.Decimal(9, 6) @map("lat")
-  lng              Decimal?          @db.Decimal(9, 6) @map("lng")
-  totalCoins       Int               @default(0) @map("totalCoins")
-  totalScans       Int               @default(0) @map("totalScans")
-  avgRating        Decimal           @default(0) @db.Decimal(3, 2) @map("avgRating")
-  isActive         Boolean           @default(true) @map("isActive")
-  createdAt        DateTime          @default(now()) @map("createdAt")
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
+  authUserId        String?   @unique @db.Uuid @map("auth_user_id") // Links to Supabase auth.users
+  email             String    @unique @map("email")
+  name              String    @map("name")
+  phone             String    @unique @map("phone")
+  district          String?   @map("district")
+  state             String?   @map("state")
+  lat               Decimal?  @db.Decimal(9, 6) @map("lat")
+  lng               Decimal?  @db.Decimal(9, 6) @map("lng")
+  motivation        String?   @db.Text @map("motivation") // Why they want to volunteer
   
-  scans            Scan[]
-  soilReadings     SoilReading[]
-  coinTransactions CoinTransaction[]
-  redemptions      Redemption[]
-  leaderboardCache LeaderboardCache?
+  // Auth & verification status
+  status            String    @default("pending_verification") @map("status") // pending_verification, active, inactive, suspended
+  emailVerified     Boolean   @default(false) @map("email_verified")
+  lastLogin         DateTime? @map("last_login")
+  lastLoginAttempt  DateTime? @map("last_login_attempt")
+  
+  // Volunteer stats
+  totalCoins        Int       @default(0) @map("total_coins")
+  totalScans        Int       @default(0) @map("total_scans")
+  avgRating         Decimal   @default(0) @db.Decimal(3, 2) @map("avg_rating")
+  isActive          Boolean   @default(false) @map("is_active")
+  
+  // Metadata
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  scans             Scan[]
+  soilReadings      SoilReading[]
+  coinTransactions  CoinTransaction[]
+  redemptions       Redemption[]
+  leaderboardCache  LeaderboardCache?
 
   @@map("Volunteer")
 }
 
 model Scan {
   id               String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  farmerId         String       @db.Uuid @map("farmerId")
-  volunteerId      String?      @db.Uuid @map("volunteerId")
-  scanType         String       @map("scanType")
-  imageUrl         String?      @map("imageUrl")
-  diseaseDetected  String?      @map("diseaseDetected")
+  farmerId         String       @db.Uuid @map("farmer_id")
+  volunteerId      String?      @db.Uuid @map("volunteer_id")
+  scanType         String       @map("scan_type")
+  imageUrl         String?      @map("image_url")
+  diseaseDetected  String?      @map("disease_detected")
   confidence       Decimal?     @db.Decimal(5, 4) @map("confidence")
-  cropType         String?      @map("cropType")
-  quickFix         String?      @map("quickFix")
-  permanentFix     String?      @map("permanentFix")
+  cropType         String?      @map("crop_type")
+  quickFix         String?      @map("quick_fix")
+  permanentFix     String?      @map("permanent_fix")
   severity         String?      @map("severity")
-  rawModelOutput   Json?        @map("rawModelOutput")
-  farmerRating     Int?         @map("farmerRating")
-  coinsAwarded     Int          @default(0) @map("coinsAwarded")
-  createdAt        DateTime     @default(now()) @map("createdAt")
+  rawModelOutput   Json?        @map("raw_model_output")
+  farmerRating     Int?         @map("farmer_rating")
+  coinsAwarded     Int          @default(0) @map("coins_awarded")
+  createdAt        DateTime     @default(now()) @map("created_at")
   
   farmer           Farmer       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   volunteer        Volunteer?   @relation(fields: [volunteerId], references: [id], onDelete: SetNull)
   
-  @@index([farmerId], map: "Scan_farmerId_idx")
-  @@index([volunteerId], map: "Scan_volunteerId_idx")
-  @@index([createdAt], map: "Scan_createdAt_idx")
-  @@index([scanType], map: "Scan_scanType_idx")
+  @@index([farmerId], map: "Scan_farmer_id_idx")
+  @@index([volunteerId], map: "Scan_volunteer_id_idx")
+  @@index([createdAt], map: "Scan_created_at_idx")
+  @@index([scanType], map: "Scan_scan_type_idx")
   @@map("Scan")
 }
 
 model SoilReading {
   id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  farmerId       String       @db.Uuid @map("farmerId")
-  volunteerId    String?      @db.Uuid @map("volunteerId")
-  deviceId       String       @map("deviceId")
+  farmerId       String       @db.Uuid @map("farmer_id")
+  volunteerId    String?      @db.Uuid @map("volunteer_id")
+  deviceId       String       @map("device_id")
   nitrogen       Decimal?     @db.Decimal(6, 2) @map("nitrogen")
   phosphorus     Decimal?     @db.Decimal(6, 2) @map("phosphorus")
   potassium      Decimal?     @db.Decimal(6, 2) @map("potassium")
@@ -91,46 +105,46 @@ model SoilReading {
   humidity       Decimal?     @db.Decimal(5, 2) @map("humidity")
   ph             Decimal?     @db.Decimal(4, 2) @map("ph")
   rainfall       Decimal?     @db.Decimal(6, 2) @map("rainfall")
-  selectedCrop   String?      @map("selectedCrop")
+  selectedCrop   String?      @map("selected_crop")
   recommendation Json?        @map("recommendation")
-  coinsAwarded   Int          @default(0) @map("coinsAwarded")
-  createdAt      DateTime     @default(now()) @map("createdAt")
+  coinsAwarded   Int          @default(0) @map("coins_awarded")
+  createdAt      DateTime     @default(now()) @map("created_at")
   
   farmer         Farmer       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
   volunteer      Volunteer?   @relation(fields: [volunteerId], references: [id], onDelete: SetNull)
   
-  @@index([farmerId], map: "SoilReading_farmerId_idx")
+  @@index([farmerId], map: "SoilReading_farmer_id_idx")
   @@map("SoilReading")
 }
 
 model CoinTransaction {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  volunteerId     String       @db.Uuid @map("volunteerId")
+  volunteerId     String       @db.Uuid @map("volunteer_id")
   amount          Int          @map("amount")
-  transactionType String       @map("transactionType")
-  referenceId     String?      @db.Uuid @map("referenceId")
+  transactionType String       @map("transaction_type")
+  referenceId     String?      @db.Uuid @map("reference_id")
   description     String?      @map("description")
-  balanceAfter    Int          @map("balanceAfter")
-  createdAt       DateTime     @default(now()) @map("createdAt")
+  balanceAfter    Int          @map("balance_after")
+  createdAt       DateTime     @default(now()) @map("created_at")
   
   volunteer       Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
   
-  @@index([volunteerId], map: "CoinTransaction_volunteerId_idx")
-  @@index([createdAt], map: "CoinTransaction_createdAt_idx")
+  @@index([volunteerId], map: "CoinTransaction_volunteer_id_idx")
+  @@index([createdAt], map: "CoinTransaction_created_at_idx")
   @@map("CoinTransaction")
 }
 
 model Redemption {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  volunteerId     String       @db.Uuid @map("volunteerId")
-  coinsRedeemed   Int          @map("coinsRedeemed")
+  volunteerId     String       @db.Uuid @map("volunteer_id")
+  coinsRedeemed   Int          @map("coins_redeemed")
   method          String       @map("method")
-  methodDetails   String?      @map("methodDetails")
-  amountInr       Decimal?     @db.Decimal(8, 2) @map("amountInr")
+  methodDetails   String?      @map("method_details")
+  amountInr       Decimal?     @db.Decimal(8, 2) @map("amount_inr")
   status          String       @default("pending") @map("status")
-  adminNote       String?      @map("adminNote")
-  createdAt       DateTime     @default(now()) @map("createdAt")
-  processedAt     DateTime?    @map("processedAt")
+  adminNote       String?      @map("admin_note")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  processedAt     DateTime?    @map("processed_at")
   
   volunteer       Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
 
@@ -138,62 +152,62 @@ model Redemption {
 }
 
 model LeaderboardCache {
-  volunteerId   String       @id @unique @db.Uuid @map("volunteerId")
+  volunteerId   String       @id @unique @db.Uuid @map("volunteer_id")
   name          String       @map("name")
   district      String       @default("") @map("district")
   state         String       @default("") @map("state")
-  totalCoins    Int          @default(0) @map("totalCoins")
-  totalScans    Int          @default(0) @map("totalScans")
-  avgRating     Decimal      @default(0) @db.Decimal(3, 2) @map("avgRating")
-  nationalRank  Int?         @map("nationalRank")
-  stateRank     Int?         @map("stateRank")
-  districtRank  Int?         @map("districtRank")
-  lastUpdated   DateTime     @default(now()) @map("lastUpdated")
+  totalCoins    Int          @default(0) @map("total_coins")
+  totalScans    Int          @default(0) @map("total_scans")
+  avgRating     Decimal      @default(0) @db.Decimal(3, 2) @map("avg_rating")
+  nationalRank  Int?         @map("national_rank")
+  stateRank     Int?         @map("state_rank")
+  districtRank  Int?         @map("district_rank")
+  lastUpdated   DateTime     @default(now()) @map("last_updated")
   
   volunteer     Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
   
-  @@index([totalCoins], map: "LeaderboardCache_totalCoins_idx")
-  @@index([state, totalCoins], map: "LeaderboardCache_state_totalCoins_idx")
-  @@index([district, totalCoins], map: "LeaderboardCache_district_totalCoins_idx")
+  @@index([totalCoins], map: "LeaderboardCache_total_coins_idx")
+  @@index([state, totalCoins], map: "LeaderboardCache_state_total_coins_idx")
+  @@index([district, totalCoins], map: "LeaderboardCache_district_total_coins_idx")
   @@map("LeaderboardCache")
 }
 
 model DiseaseTreatment {
   id              String       @id @map("id")
-  diseaseName     String       @map("diseaseName")
-  cropType        String       @map("cropType")
-  quickFix        String       @db.Text @map("quickFix")
-  permanentFix    String       @db.Text @map("permanentFix")
-  severityGuide   String?      @map("severityGuide")
-  pesticideName   String?      @map("pesticideName")
-  organicFix      String?      @db.Text @map("organicFix")
-  createdAt       DateTime     @default(now()) @map("createdAt")
+  diseaseName     String       @map("disease_name")
+  cropType        String       @map("crop_type")
+  quickFix        String       @db.Text @map("quick_fix")
+  permanentFix    String       @db.Text @map("permanent_fix")
+  severityGuide   String?      @map("severity_guide")
+  pesticideName   String?      @map("pesticide_name")
+  organicFix      String?      @db.Text @map("organic_fix")
+  createdAt       DateTime     @default(now()) @map("created_at")
 
   @@map("DiseaseTreatment")
 }
 
 model DroneDevice {
   id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  deviceId      String       @unique @map("deviceId")
-  deviceToken   String       @unique @map("deviceToken")
+  deviceId      String       @unique @map("device_id")
+  deviceToken   String       @unique @map("device_token")
   name          String?      @map("name")
-  isActive      Boolean      @default(true) @map("isActive")
-  lastUsedAt    DateTime?    @map("lastUsedAt")
-  createdAt     DateTime     @default(now()) @map("createdAt")
-  volunteerId   String?      @db.Uuid @map("volunteerId")
+  isActive      Boolean      @default(true) @map("is_active")
+  lastUsedAt    DateTime?    @map("last_used_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  volunteerId   String?      @db.Uuid @map("volunteer_id")
 
   @@map("DroneDevice")
 }
 
 model SoilDevice {
   id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("id")
-  deviceId      String       @unique @map("deviceId")
-  deviceToken   String       @unique @map("deviceToken")
+  deviceId      String       @unique @map("device_id")
+  deviceToken   String       @unique @map("device_token")
   name          String?      @map("name")
-  isActive      Boolean      @default(true) @map("isActive")
-  lastUsedAt    DateTime?    @map("lastUsedAt")
-  createdAt     DateTime     @default(now()) @map("createdAt")
-  volunteerId   String?      @db.Uuid @map("volunteerId")
+  isActive      Boolean      @default(true) @map("is_active")
+  lastUsedAt    DateTime?    @map("last_used_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  volunteerId   String?      @db.Uuid @map("volunteer_id")
 
   @@map("SoilDevice")
 }
