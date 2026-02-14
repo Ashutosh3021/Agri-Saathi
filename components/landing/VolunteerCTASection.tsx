@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Check, Loader2 } from "lucide-react"
 
@@ -43,33 +43,49 @@ export default function VolunteerCTASection() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
 
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {}
     let isValid = true
 
+    // Name validation (2-50 chars, letters and spaces only)
     if (!formData.name.trim()) {
       newErrors.name = "Full name is required"
       isValid = false
+    } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.name.trim())) {
+      newErrors.name = "Name must be 2-50 characters and contain only letters and spaces"
+      isValid = false
     }
+
+    // Phone validation (exactly 10 digits)
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required"
       isValid = false
-    } else if (!/^\d{10}$/.test(formData.phone)) {
+    } else if (!/^\d{10}$/.test(formData.phone.trim())) {
       newErrors.phone = "Phone must be exactly 10 digits"
       isValid = false
     }
+
+    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "Email is required"
       isValid = false
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email.trim())) {
       newErrors.email = "Please enter a valid email address"
       isValid = false
     }
+
+    // District validation
     if (!formData.district.trim()) {
       newErrors.district = "District is required"
       isValid = false
+    } else if (formData.district.trim().length < 2) {
+      newErrors.district = "District must be at least 2 characters"
+      isValid = false
     }
+
+    // State validation
     if (!formData.state) {
       newErrors.state = "State is required"
       isValid = false
@@ -77,11 +93,16 @@ export default function VolunteerCTASection() {
 
     setErrors(newErrors)
     return isValid
-  }
+  }, [formData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Prevent duplicate submissions
+    if (loading) return
+    
     setError(null)
+    setWarning(null)
 
     if (!validateForm()) return
 
@@ -90,14 +111,25 @@ export default function VolunteerCTASection() {
     try {
       const response = await fetch("/api/volunteer/apply", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData)
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Something went wrong")
+        // Handle specific error codes
+        if (data.code === 'MISSING_FUNCTION') {
+          throw new Error("System setup incomplete. Please contact support.")
+        }
+        throw new Error(data.error || data.details || "Something went wrong")
+      }
+
+      // Check if there was a warning (email failed but account created)
+      if (data.warning) {
+        setWarning(data.message || data.error)
       }
 
       setSubmitted(true)
@@ -109,10 +141,17 @@ export default function VolunteerCTASection() {
   }
 
   const handleInputChange = (field: keyof FormData, value: string) => {
+    // Prevent input if loading
+    if (loading) return
+    
     setFormData(prev => ({ ...prev, [field]: value }))
     const errorField = field as keyof FormErrors
     if (errors[errorField]) {
       setErrors(prev => ({ ...prev, [errorField]: undefined }))
+    }
+    // Clear error when user starts typing
+    if (error) {
+      setError(null)
     }
   }
 
@@ -260,8 +299,19 @@ export default function VolunteerCTASection() {
                   <Check className="w-10 h-10 text-green-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Received! 🎉</h3>
-                <p className="text-gray-600 mb-2">Check your email ({formData.email}) for a verification link.</p>
-                <p className="text-sm text-gray-500 mb-6">Click it to access your volunteer dashboard. Link expires in 24 hours.</p>
+                {warning ? (
+                  <>
+                    <p className="text-amber-600 mb-2">{warning}</p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Your account was created successfully. Please contact support if you don&apos;t receive the verification email within a few minutes.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-600 mb-2">Check your email ({formData.email}) for a verification link.</p>
+                    <p className="text-sm text-gray-500 mb-6">Click it to access your volunteer dashboard. Link expires in 24 hours.</p>
+                  </>
+                )}
                 <button
                   onClick={() => window.location.href = '/Volunteers'}
                   className="bg-[#16a34a] hover:bg-[#15803d] text-white rounded-xl px-6 py-3 font-semibold transition-colors"
@@ -272,7 +322,7 @@ export default function VolunteerCTASection() {
             ) : (
               <form onSubmit={handleSubmit}>
                 {error && (
-                  <div className="bg-amber-100 border border-amber-400 text-amber-700 px-4 py-3 rounded-lg mb-6">
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
                     {error}
                   </div>
                 )}
@@ -284,7 +334,8 @@ export default function VolunteerCTASection() {
                       type="text"
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Enter your full name"
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -295,7 +346,8 @@ export default function VolunteerCTASection() {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="10 digit number"
                     />
                     {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -308,7 +360,8 @@ export default function VolunteerCTASection() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                    disabled={loading}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="your@email.com"
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -321,7 +374,8 @@ export default function VolunteerCTASection() {
                       type="text"
                       value={formData.district}
                       onChange={(e) => handleInputChange('district', e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Enter your district"
                     />
                     {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
@@ -331,7 +385,8 @@ export default function VolunteerCTASection() {
                     <select
                       value={formData.state}
                       onChange={(e) => handleInputChange('state', e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     >
                       <option value="">Select a state</option>
                       {states.map(state => (
@@ -347,8 +402,9 @@ export default function VolunteerCTASection() {
                   <textarea
                     value={formData.motivation}
                     onChange={(e) => handleInputChange('motivation', e.target.value)}
+                    disabled={loading}
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#16a34a] focus:border-transparent resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Tell us why you'd like to join..."
                   />
                 </div>
@@ -356,7 +412,7 @@ export default function VolunteerCTASection() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#16a34a] hover:bg-[#15803d] disabled:bg-[#16a34a]/70 text-white rounded-xl px-6 py-3 font-semibold transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-[#16a34a] hover:bg-[#15803d] disabled:bg-[#16a34a]/70 text-white rounded-xl px-6 py-3 font-semibold transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
