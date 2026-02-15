@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Loader2, ArrowLeft, CheckCircle2, ArrowRight } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Loader2, ArrowLeft, CheckCircle2, ArrowRight, Eye, EyeOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +19,10 @@ import {
 type FormState = "initial" | "loading" | "success" | "error"
 
 export function VolunteerLoginForm() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [formState, setFormState] = useState<FormState>("initial")
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -34,59 +38,46 @@ export function VolunteerLoginForm() {
       return
     }
 
-    setFormState("loading")
-
-    try {
-      const response = await fetch('/api/auth/send-magic-link', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setFormState("success")
-      } else {
-        setErrorMessage(data.error || "Something went wrong. Please try again.")
-        setFormState("error")
-      }
-    } catch (error) {
-      setErrorMessage("Failed to send login link. Please try again.")
+    if (!password || password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters.")
       setFormState("error")
+      return
     }
-  }
 
-  const handleResend = async () => {
     setFormState("loading")
-    
+
     try {
-      const response = await fetch('/api/auth/send-magic-link', {
+      const response = await fetch('/api/auth/volunteer-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, password }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
         setFormState("success")
+        console.log('✅ Login successful, redirecting to dashboard...')
+        // Redirect to the new volunteer dashboard
+        setTimeout(() => {
+          console.log('🔄 Redirecting to volunteer dashboard...')
+          window.location.href = '/volunteer/dashboard'
+        }, 1500)
       } else {
-        setErrorMessage(data.error || "Failed to resend. Please try again.")
+        setErrorMessage(data.error || "Invalid email or password. Please try again.")
         setFormState("error")
       }
     } catch (error) {
-      setErrorMessage("Failed to resend. Please try again.")
+      setErrorMessage("Failed to login. Please try again.")
       setFormState("error")
     }
   }
 
   const handleBackToLogin = () => {
     setEmail("")
+    setPassword("")
     setFormState("initial")
     setErrorMessage("")
   }
@@ -113,32 +104,13 @@ export function VolunteerLoginForm() {
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 sm:h-14 sm:w-14">
                 <CheckCircle2 className="h-6 w-6 text-emerald-600 sm:h-7 sm:w-7" />
               </div>
-              <CardTitle className="text-xl sm:text-2xl">Check Your Email</CardTitle>
+              <CardTitle className="text-xl sm:text-2xl">Login Successful!</CardTitle>
               <CardDescription className="text-sm leading-relaxed sm:text-base">
-                {"We've sent a login link to "}
-                <span className="font-medium text-foreground">{email}</span>
+                Welcome back! Redirecting you to your dashboard...
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4 text-center sm:pt-2">
-              <p className="text-sm text-muted-foreground">
-                Click the link in your email to access your dashboard. Link
-                expires in 1 hour.
-              </p>
-              <Button
-                variant="link"
-                className="h-auto p-0 text-sm font-medium text-primary"
-                onClick={handleResend}
-              >
-                {"Didn't receive it? Resend"}
-              </Button>
-              <Button
-                variant="ghost"
-                className="h-auto p-0 text-sm text-muted-foreground"
-                onClick={handleBackToLogin}
-              >
-                <ArrowLeft className="mr-1 h-3 w-3" />
-                Back to login
-              </Button>
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </CardContent>
           </>
         ) : (
@@ -147,7 +119,7 @@ export function VolunteerLoginForm() {
             <CardHeader className="space-y-1 sm:pb-6">
               <CardTitle className="text-xl sm:text-2xl">Login to Your Dashboard</CardTitle>
               <CardDescription className="text-sm sm:text-base">
-                Enter your registered email to receive a login link
+                Enter your email and password to access your account
               </CardDescription>
             </CardHeader>
             <CardContent className="sm:pt-2">
@@ -170,53 +142,91 @@ export function VolunteerLoginForm() {
                     className="h-11 rounded-xl"
                     required
                     aria-describedby={
-                      formState === "error" ? "email-error" : undefined
+                      formState === "error" ? "login-error" : undefined
                     }
                   />
-                  {formState === "error" && (
-                    <div id="email-error" role="alert">
-                      <p className="text-sm text-destructive">{errorMessage}</p>
-                      {errorMessage.includes("not registered") && (
-                        <Link
-                          href="/#volunteer-signup"
-                          className="mt-1 inline-flex items-center text-sm font-medium text-primary hover:underline"
-                        >
-                          Apply as a volunteer
-                          <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
-                      )}
-                    </div>
-                  )}
                 </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="volunteer-password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="volunteer-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        if (formState === "error") {
+                          setFormState("initial")
+                          setErrorMessage("")
+                        }
+                      }}
+                      disabled={formState === "loading"}
+                      className="h-11 rounded-xl pr-10"
+                      required
+                      minLength={6}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {formState === "error" && (
+                  <div id="login-error" role="alert" className="text-sm text-destructive">
+                    {errorMessage}
+                  </div>
+                )}
 
                 <Button
                   type="submit"
-                  disabled={formState === "loading" || !email}
+                  disabled={formState === "loading" || !email || !password}
                   className="h-11 w-full rounded-xl font-semibold"
                 >
                   {formState === "loading" ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending link...
+                      Logging in...
                     </>
                   ) : (
                     <>
-                      Send Login Link
+                      Login
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </>
                   )}
                 </Button>
               </form>
 
-              <p className="mt-6 text-center text-sm text-muted-foreground">
-                {"Don't have an account? "}
-                <Link
-                  href="/#volunteer-signup"
-                  className="font-medium text-primary hover:underline"
-                >
-                  Apply to become a volunteer
-                </Link>
-              </p>
+              <div className="mt-6 space-y-4">
+                <p className="text-center text-sm text-muted-foreground">
+                  <Link
+                    href="/#volunteer-signup"
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Forgot your password?
+                  </Link>
+                </p>
+
+                <p className="text-center text-sm text-muted-foreground">
+                  Don&apos;t have an account?{' '}
+                  <Link
+                    href="/#volunteer-signup"
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Apply to become a volunteer
+                  </Link>
+                </p>
+              </div>
             </CardContent>
           </>
         )}

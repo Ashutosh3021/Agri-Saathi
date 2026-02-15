@@ -45,6 +45,14 @@ function sanitizeInput(input: string): string {
     .slice(0, 500) // Limit length
 }
 
+// Generate password: first letter of name + first 5 digits of phone
+// Example: Name: "Ashutosh Patra", Phone: "8249912238" → Password: "A82499"
+function generatePassword(name: string, phone: string): string {
+  const firstLetter = name.trim().charAt(0).toUpperCase()
+  const firstFiveDigits = phone.replace(/\D/g, '').slice(0, 5)
+  return `${firstLetter}${firstFiveDigits}`
+}
+
 export async function POST(req: Request) {
   try {
     // Get client IP for rate limiting
@@ -170,11 +178,16 @@ export async function POST(req: Request) {
       )
     }
 
-    // Create Supabase Auth user
-    console.log('✅ Creating Supabase auth user...')
+    // Generate password
+    const generatedPassword = generatePassword(name, phone)
+    console.log('🔑 Generated password for volunteer')
+
+    // Create Supabase Auth user with password
+    console.log('✅ Creating Supabase auth user with password...')
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email: email,
-      email_confirm: false,
+      password: generatedPassword,
+      email_confirm: true, // Auto-confirm email since we're using password
       user_metadata: { 
         name, 
         role: 'volunteer',
@@ -206,7 +219,8 @@ export async function POST(req: Request) {
         p_phone: phone,
         p_district: district,
         p_state: state,
-        p_motivation: motivation || null
+        p_motivation: motivation || null,
+        p_temp_password: generatedPassword
       })
 
       if (sqlError) {
@@ -243,53 +257,15 @@ export async function POST(req: Request) {
 
     console.log('✅ Volunteer record created:', volunteerData)
 
-    // Send magic link email with better error handling
-    console.log('📧 Sending magic link email...')
-    let emailSent = false
-    let emailErrorMsg = ''
-    
-    try {
-      const { error: emailError } = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/callback`,
-          data: { volunteer_id: volunteerData }
-        }
-      })
-
-      if (emailError) {
-        // Check for rate limit
-        if (emailError.status === 429 || emailError.message?.includes('rate limit')) {
-          emailErrorMsg = 'Email rate limit exceeded. Please try again in 1 hour.'
-        } else {
-          emailErrorMsg = emailError.message
-        }
-        console.error('❌ Magic link email error:', emailError)
-      } else {
-        emailSent = true
-        console.log('✅ Magic link email sent')
-      }
-    } catch (emailError: any) {
-      emailErrorMsg = emailError.message || 'Failed to send email'
-      console.error('❌ Email sending exception:', emailError)
-    }
-
-    // Return appropriate response based on email status
-    if (!emailSent) {
-      // User was created but email failed - they can still log in later
-      return NextResponse.json({
-        success: true,
-        warning: true,
-        message: 'Account created successfully but verification email could not be sent. Please contact support or try logging in later.',
-        emailError: emailErrorMsg,
-        volunteerId: volunteerData
-      }, { status: 200 })
-    }
-
     return NextResponse.json({
       success: true,
-      message: 'Application received! Check your email for a verification link.',
-      volunteerId: volunteerData
+      message: 'Application approved! Your account has been created successfully.',
+      credentials: {
+        email: email,
+        password: generatedPassword
+      },
+      volunteerId: volunteerData,
+      loginUrl: '/Volunteers'
     })
 
   } catch (error) {

@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect volunteer dashboard routes
+  // Protect volunteer dashboard routes (both old and new)
   if (request.nextUrl.pathname.startsWith('/Volunteers/Dashboard')) {
     if (!user) {
       return NextResponse.redirect(new URL('/Volunteers', request.url))

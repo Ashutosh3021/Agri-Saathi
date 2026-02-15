@@ -45,6 +45,10 @@ model Volunteer {
   lastLogin         DateTime? @map("last_login")
   lastLoginAttempt  DateTime? @map("last_login_attempt")
   
+  // Password for initial login (auto-generated: first letter of name + first 5 digits of phone)
+  tempPassword      String?   @map("temp_password")
+  passwordChanged   Boolean   @default(false) @map("password_changed")
+  
   // Volunteer stats
   totalCoins        Int       @default(0) @map("total_coins")
   totalScans        Int       @default(0) @map("total_scans")

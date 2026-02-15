@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Check, Loader2 } from "lucide-react"
+import { Check, Loader2, Copy, Eye, EyeOff } from "lucide-react"
 
 const states = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
@@ -44,6 +44,9 @@ export default function VolunteerCTASection() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [warning, setWarning] = useState<string | null>(null)
+  const [credentials, setCredentials] = useState<{email: string, password: string} | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
 
   const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {}
@@ -130,6 +133,11 @@ export default function VolunteerCTASection() {
       // Check if there was a warning (email failed but account created)
       if (data.warning) {
         setWarning(data.message || data.error)
+      }
+
+      // Store credentials if available
+      if (data.credentials) {
+        setCredentials(data.credentials)
       }
 
       setSubmitted(true)
@@ -298,20 +306,87 @@ export default function VolunteerCTASection() {
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Check className="w-10 h-10 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Received! 🎉</h3>
-                {warning ? (
-                  <>
-                    <p className="text-amber-600 mb-2">{warning}</p>
-                    <p className="text-sm text-gray-500 mb-6">
-                      Your account was created successfully. Please contact support if you don&apos;t receive the verification email within a few minutes.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-gray-600 mb-2">Check your email ({formData.email}) for a verification link.</p>
-                    <p className="text-sm text-gray-500 mb-6">Click it to access your volunteer dashboard. Link expires in 24 hours.</p>
-                  </>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to AgriSathi! 🎉</h3>
+                <p className="text-gray-600 mb-6">Your volunteer account has been created successfully.</p>
+                
+                {credentials && (
+                  <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-6 text-left">
+                    <h4 className="font-bold text-amber-800 mb-4 text-lg">🔐 Your Login Credentials</h4>
+                    <p className="text-sm text-amber-700 mb-4">Please save these credentials securely. You will need them to log in.</p>
+                    
+                    <div className="space-y-3">
+                      <div className="bg-white rounded-lg p-3 flex items-center justify-between">
+                        <div className="flex-1">
+                          <label className="text-xs text-gray-500 block mb-1">Email</label>
+                          <p className="font-mono text-sm font-semibold text-gray-800">{credentials.email}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(credentials.email)
+                            setCopiedField('email')
+                            setTimeout(() => setCopiedField(null), 2000)
+                          }}
+                          className="ml-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          title="Copy email"
+                        >
+                          <Copy className="w-4 h-4 text-gray-600" />
+                        </button>
+                        {copiedField === 'email' && (
+                          <span className="text-xs text-green-600 ml-2">Copied!</span>
+                        )}
+                      </div>
+                      
+                      <div className="bg-white rounded-lg p-3 flex items-center justify-between">
+                        <div className="flex-1">
+                          <label className="text-xs text-gray-500 block mb-1">Password</label>
+                          <p className="font-mono text-sm font-semibold text-gray-800">
+                            {showPassword ? credentials.password : '••••••'}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            title={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="w-4 h-4 text-gray-600" />
+                            ) : (
+                              <Eye className="w-4 h-4 text-gray-600" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(credentials.password)
+                              setCopiedField('password')
+                              setTimeout(() => setCopiedField(null), 2000)
+                            }}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            title="Copy password"
+                          >
+                            <Copy className="w-4 h-4 text-gray-600" />
+                          </button>
+                          {copiedField === 'password' && (
+                            <span className="text-xs text-green-600 ml-2">Copied!</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-800">
+                        <strong>💡 Tip:</strong> Your password is the first letter of your name + first 5 digits of your phone number
+                      </p>
+                    </div>
+                  </div>
                 )}
+                
+                {warning && (
+                  <div className="bg-amber-100 border border-amber-400 text-amber-700 px-4 py-3 rounded-lg mb-6">
+                    {warning}
+                  </div>
+                )}
+                
                 <button
                   onClick={() => window.location.href = '/Volunteers'}
                   className="bg-[#16a34a] hover:bg-[#15803d] text-white rounded-xl px-6 py-3 font-semibold transition-colors"
