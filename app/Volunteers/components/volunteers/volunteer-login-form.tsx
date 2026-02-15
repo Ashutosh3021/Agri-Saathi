@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Loader2, ArrowLeft, CheckCircle2, ArrowRight, Eye, EyeOff } from "lucide-react"
+import { Loader2, CheckCircle2, ArrowRight, Eye, EyeOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -59,11 +59,9 @@ export function VolunteerLoginForm() {
 
       if (response.ok) {
         setFormState("success")
-        console.log('✅ Login successful, redirecting to dashboard...')
-        // Redirect to the new volunteer dashboard
+        // Redirect to volunteer dashboard
         setTimeout(() => {
-          console.log('🔄 Redirecting to volunteer dashboard...')
-          window.location.href = '/volunteer/dashboard'
+          router.push('/volunteer/dashboard')
         }, 1500)
       } else {
         setErrorMessage(data.error || "Invalid email or password. Please try again.")
@@ -73,13 +71,6 @@ export function VolunteerLoginForm() {
       setErrorMessage("Failed to login. Please try again.")
       setFormState("error")
     }
-  }
-
-  const handleBackToLogin = () => {
-    setEmail("")
-    setPassword("")
-    setFormState("initial")
-    setErrorMessage("")
   }
 
   return (
