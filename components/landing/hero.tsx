@@ -1,136 +1,193 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import useSWR from "swr"
+import { motion, useReducedMotion } from "framer-motion";
+import useSWR from "swr";
+import Image from "next/image";
+import { useState } from "react";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Stats {
-  farmersHelped: number
-  diseasesDetected: number
-  volunteers: number
-  accuracy: number
+  farmers: number;
+  yieldIncrease: number;
+  accuracy: number;
+  waterSaved: number;
 }
 
 function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
   return (
     <motion.span
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-3xl font-bold text-primary md:text-4xl"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
     >
-      {value.toLocaleString()}
-      {suffix}
+      {value}{suffix}
     </motion.span>
-  )
+  );
 }
 
 export function Hero() {
-  // BACKEND_CONNECTION: Fetch live stats from /api/stats — connect to Supabase
-  const { data } = useSWR<Stats>("/api/stats", fetcher, {
-    refreshInterval: 30000,
-  })
-
-  const statItems = [
-    { label: "Farmers Helped", value: data?.farmersHelped ?? 0, suffix: "" },
-    { label: "Diseases Detected", value: data?.diseasesDetected ?? 0, suffix: "" },
-    { label: "Volunteers Active", value: data?.volunteers ?? 0, suffix: "" },
-    { label: "Accuracy Rate", value: data?.accuracy ?? 0, suffix: "%" },
-  ]
+  const { data: stats } = useSWR<Stats>("/api/stats", fetcher, {
+    fallbackData: {
+      farmers: 50000,
+      yieldIncrease: 35,
+      accuracy: 92,
+      waterSaved: 40,
+    },
+  });
+  
+  const prefersReducedMotion = useReducedMotion();
+  const [imageError, setImageError] = useState(false);
 
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden pt-20">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/10" />
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-primary/10 blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-secondary/15 blur-3xl"
-        />
-      </div>
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50" />
+      
+      {/* Animated Background Elements */}
+      <motion.div
+        className="absolute top-20 left-10 w-72 h-72 bg-green-200/30 rounded-full blur-3xl"
+        animate={prefersReducedMotion ? {} : {
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-20 right-10 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl"
+        animate={prefersReducedMotion ? {} : {
+          scale: [1.2, 1, 1.2],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
 
-      <div className="mx-auto w-full max-w-7xl px-6 py-20">
-        <div className="flex flex-col items-center text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+        {/* 60/40 Split Layout for Desktop */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:gap-8">
+          {/* Left Column - Text Content (60% width on desktop) */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="lg:w-[60%] space-y-8 lg:pl-4"
           >
-            <span className="h-2 w-2 rounded-full bg-primary" />
-            <span className="text-xs font-medium tracking-wide text-primary uppercase">
-              LIVE DATA
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="max-w-4xl text-4xl font-bold leading-tight tracking-tight text-foreground text-balance md:text-6xl lg:text-7xl"
-          >
-            AI-Powered Crop Intelligence for Every Indian Farmer
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
-          >
-            Detect diseases in seconds. Know your soil. Grow smarter.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-10 flex flex-col gap-4 sm:flex-row"
-          >
-            <a
-              href="#how-it-works"
-              className="rounded-lg bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium"
             >
-              See How It Works
-            </a>
-            <a
-              href="#demo"
-              className="rounded-lg border border-border bg-transparent px-8 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
-            >
-              Watch Demo
-            </a>
-          </motion.div>
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2" />
+              AI-Powered Agriculture
+            </motion.div>
 
-          {/* Stats counters */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-20 grid w-full max-w-3xl grid-cols-2 gap-8 md:grid-cols-4"
-          >
-            {statItems.map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center gap-1">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                  {stat.label}
-                </span>
+            {/* Title - Repositioned */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 text-balance leading-tight lg:text-left">
+              AI-Powered Crop Intelligence
+              <span className="block text-green-600">for Every Indian Farmer</span>
+            </h1>
+
+            {/* Paragraph */}
+            <p className="text-xl text-gray-600 max-w-lg lg:text-left">
+              Empowering farmers with cutting-edge AI technology to maximize yields, 
+              optimize resources, and build sustainable agricultural practices for the future.
+            </p>
+
+            {/* Buttons */}
+            <div className="flex flex-wrap gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-green-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:bg-green-700 transition-colors"
+              >
+                Get Started
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-white text-gray-700 border-2 border-gray-200 rounded-xl font-semibold text-lg hover:border-green-600 hover:text-green-600 transition-colors"
+              >
+                Learn More
+              </motion.button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8">
+              <div className="text-center lg:text-left">
+                <div className="text-3xl font-bold text-green-600">
+                  <AnimatedCounter value={stats?.farmers || 50000} suffix="+" />
+                </div>
+                <div className="text-sm text-gray-600">Active Farmers</div>
               </div>
-            ))}
+              <div className="text-center lg:text-left">
+                <div className="text-3xl font-bold text-green-600">
+                  <AnimatedCounter value={stats?.yieldIncrease || 35} suffix="%" />
+                </div>
+                <div className="text-sm text-gray-600">Yield Increase</div>
+              </div>
+              <div className="text-center lg:text-left">
+                <div className="text-3xl font-bold text-green-600">
+                  <AnimatedCounter value={stats?.accuracy || 92} suffix="%" />
+                </div>
+                <div className="text-sm text-gray-600">AI Accuracy</div>
+              </div>
+              <div className="text-center lg:text-left">
+                <div className="text-3xl font-bold text-green-600">
+                  <AnimatedCounter value={stats?.waterSaved || 40} suffix="%" />
+                </div>
+                <div className="text-sm text-gray-600">Water Saved</div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Image (40% width on desktop) */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="lg:w-[40%] mt-12 lg:mt-0 hidden lg:block"
+          >
+            <motion.div 
+              className="relative w-full aspect-[4/3]"
+              animate={prefersReducedMotion ? {} : {
+                y: [0, -10, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              {!imageError ? (
+                <Image
+                  src="/images/Gemini_Generated_Image_gsvvv0gsvvv0gsvv.png"
+                  alt="AI-powered farming technology visualization showing smart agricultural solutions"
+                  fill
+                  className="object-contain rounded-2xl shadow-2xl"
+                  priority
+                  sizes="40vw"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center">
+                  <span className="text-gray-500 text-lg">Smart Farming</span>
+                </div>
+              )}
+            </motion.div>
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }
